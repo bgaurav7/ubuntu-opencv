@@ -1,0 +1,14 @@
+sudo: true
+dist: trusty
+
+jobs:
+  include:
+    - stage: build docker image
+      script:
+      - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+      - docker build -t ubuntu-opencv .
+      - docker images
+      - docker tag ubuntu-opencv $DOCKER_USERNAME/ubuntu-opencv
+      - docker push $DOCKER_USERNAME/ubuntu-opencv
+    - stage: test
+      script: docker run --rm $DOCKER_USERNAME/ubuntu-opencv cat hello.txt
